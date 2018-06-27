@@ -1,5 +1,6 @@
 package com.bigkoo.convenientbanner.helper;
 
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,9 @@ import android.view.ViewTreeObserver;
 import com.bigkoo.convenientbanner.adapter.CBPageAdapter;
 import com.bigkoo.convenientbanner.listener.OnPageChangeListener;
 import com.bigkoo.convenientbanner.view.CBLoopViewPager;
+import com.bigkoo.convenientbanner.view.SpeedyLinearLayoutManager;
+
+import static com.bigkoo.convenientbanner.view.SpeedyLinearLayoutManager.MILLISECONDS_PER_INCH;
 
 
 /**
@@ -21,17 +25,22 @@ public class CBLoopScaleHelper {
 
     private int mPagePadding = 0; // 卡片的padding, 卡片间的距离等于2倍的mPagePadding
     private int mShowLeftCardWidth = 0;   // 左边卡片显示大小
+    private float mScrollSpeed = MILLISECONDS_PER_INCH;
 
     private int mFirstItemPos;
 
     private PagerSnapHelper mPagerSnapHelper = new PagerSnapHelper();
     private OnPageChangeListener onPageChangeListener;
 
-    public void attachToRecyclerView(final CBLoopViewPager mRecyclerView) {
+    public void attachToRecyclerView(Context context, final CBLoopViewPager mRecyclerView) {
         if (mRecyclerView == null) {
             return;
         }
         this.mRecyclerView = mRecyclerView;
+        SpeedyLinearLayoutManager slManager = new SpeedyLinearLayoutManager(context,
+                SpeedyLinearLayoutManager.HORIZONTAL, false);
+        slManager.setSpeed(mScrollSpeed);
+        mRecyclerView.setLayoutManager(slManager);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -159,5 +168,9 @@ public class CBLoopScaleHelper {
 
     public void setOnPageChangeListener(OnPageChangeListener onPageChangeListener) {
         this.onPageChangeListener = onPageChangeListener;
+    }
+
+    public void setScrollSpeed(float speed) {
+        mScrollSpeed = speed;
     }
 }

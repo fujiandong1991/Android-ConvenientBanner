@@ -67,8 +67,8 @@ public class ConvenientBanner<T> extends RelativeLayout {
     private void init(Context context) {
         View hView = LayoutInflater.from(context).inflate(
                 R.layout.include_viewpager, this, true);
-        viewPager = (CBLoopViewPager)hView.findViewById(R.id.cbLoopViewPager);
-        loPageTurningPoint = (ViewGroup)hView
+        viewPager = (CBLoopViewPager) hView.findViewById(R.id.cbLoopViewPager);
+        loPageTurningPoint = (ViewGroup) hView
                 .findViewById(R.id.loPageTurningPoint);
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
@@ -83,6 +83,7 @@ public class ConvenientBanner<T> extends RelativeLayout {
         viewPager.setLayoutManager(layoutManager);
         return this;
     }
+
     public ConvenientBanner setPages(CBViewHolderCreator holderCreator, List<T> datas) {
         this.mDatas = datas;
         pageAdapter = new CBPageAdapter(holderCreator, mDatas, canLoop);
@@ -92,23 +93,21 @@ public class ConvenientBanner<T> extends RelativeLayout {
             setPageIndicator(page_indicatorId);
 
         cbLoopScaleHelper.setFirstItemPos(canLoop ? mDatas.size() : 0);
-        cbLoopScaleHelper.attachToRecyclerView(viewPager);
+        cbLoopScaleHelper.attachToRecyclerView(getContext(), viewPager);
 
         return this;
     }
 
-    public ConvenientBanner setCanLoop(boolean canLoop){
+    public ConvenientBanner setCanLoop(boolean canLoop) {
         this.canLoop = canLoop;
         pageAdapter.setCanLoop(canLoop);
         notifyDataSetChanged();
         return this;
     }
 
-    public boolean isCanLoop(){
+    public boolean isCanLoop() {
         return canLoop;
     }
-
-
 
 
     /**
@@ -145,7 +144,7 @@ public class ConvenientBanner<T> extends RelativeLayout {
             // 翻页指示的点
             ImageView pointView = new ImageView(getContext());
             pointView.setPadding(5, 0, 5, 0);
-            if (cbLoopScaleHelper.getFirstItemPos()%mDatas.size()==count)
+            if (cbLoopScaleHelper.getFirstItemPos() % mDatas.size() == count)
                 pointView.setImageResource(page_indicatorId[1]);
             else
                 pointView.setImageResource(page_indicatorId[0]);
@@ -196,29 +195,34 @@ public class ConvenientBanner<T> extends RelativeLayout {
 
     /**
      * 获取当前页对应的position
+     *
      * @return
      */
     public int getCurrentItem() {
         return cbLoopScaleHelper.getRealCurrentItem();
     }
+
     /**
      * 设置当前页对应的position
+     *
      * @return
      */
     public ConvenientBanner setCurrentItem(int position, boolean smoothScroll) {
-        cbLoopScaleHelper.setCurrentItem(canLoop ? mDatas.size()+position : position, smoothScroll);
+        cbLoopScaleHelper.setCurrentItem(canLoop ? mDatas.size() + position : position, smoothScroll);
         return this;
     }
 
     /**
      * 设置第一次加载当前页对应的position
      * setPageIndicator之前使用
+     *
      * @return
      */
     public ConvenientBanner setFirstItemPos(int position) {
-        cbLoopScaleHelper.setFirstItemPos(canLoop ? mDatas.size()+position : position);
+        cbLoopScaleHelper.setFirstItemPos(canLoop ? mDatas.size() + position : position);
         return this;
     }
+
     /**
      * 指示器的方向
      *
@@ -266,10 +270,18 @@ public class ConvenientBanner<T> extends RelativeLayout {
         return this;
     }
 
-
     public void stopTurning() {
         turning = false;
         removeCallbacks(adSwitchTask);
+    }
+
+    /**
+     * 设置图片翻页的切换速度
+     * @param speed 自定义翻页速度，单位为毫秒/inch，系统默认值为25f
+     * 数值越大切换速度越慢
+     */
+    public void setScrollSpeed(float speed) {
+        cbLoopScaleHelper.setScrollSpeed(speed);
     }
 
     //触碰控件的时候，翻页应该停止，离开的时候如果之前是开启了翻页的话则重新启动翻页

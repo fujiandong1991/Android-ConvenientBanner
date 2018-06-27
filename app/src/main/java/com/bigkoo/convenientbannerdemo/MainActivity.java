@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 //        initImageLoader();
         loadTestDatas();
 
+        convenientBanner.setScrollSpeed(100f);
         convenientBanner.setPages(
                 new CBViewHolderCreator() {
                     @Override
